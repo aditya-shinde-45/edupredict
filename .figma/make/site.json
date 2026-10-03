@@ -1,0 +1,10 @@
+{
+  "description": "Enhances academic productivity by organizing study materials, tracking progress, and providing smart insights for students and educators.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
