@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../lib/api';
+import clgLogo from '../assets/clglogo.png';
 
 type Role = 'admin' | 'faculty' | 'student';
 
@@ -56,9 +57,7 @@ export default function Login() {
       {/* Left panel */}
       <div className="hidden lg:flex w-96 flex-col bg-[#1E2D40] p-10 flex-shrink-0">
         <div className="flex items-center gap-2.5 mb-12">
-          <div className="w-8 h-8 rounded bg-[#2E4A6E] flex items-center justify-center">
-            <span className="text-white text-sm font-bold">GC</span>
-          </div>
+          <img src={clgLogo} alt="College Logo" className="w-10 h-10 object-contain" />
           <div>
             <p className="text-white text-sm font-semibold leading-tight">Nagpur Institute of Technology</p>
           </div>

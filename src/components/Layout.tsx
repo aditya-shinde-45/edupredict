@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { api, getUser, logout } from '../lib/api';
+import clgLogo from '../assets/clglogo.png';
 
 interface NavItem { label: string; path: string; icon: string; }
 interface LayoutProps { role: 'admin' | 'faculty' | 'student'; children: React.ReactNode; breadcrumbs?: string[]; }
@@ -68,9 +69,7 @@ export default function Layout({ role, children, breadcrumbs }: LayoutProps) {
     <div className="flex h-screen overflow-hidden bg-[#F7F8FA]">
       <aside className={`flex flex-col flex-shrink-0 bg-[#1E2D40] transition-all duration-200 ${collapsed ? 'w-14' : 'w-56'}`}>
         <div className={`flex items-center gap-2.5 px-3 py-4 border-b border-[#263850] ${collapsed ? 'justify-center' : ''}`}>
-          <div className="w-7 h-7 rounded bg-[#2E4A6E] flex items-center justify-center flex-shrink-0">
-            <span className="text-white text-xs font-bold">GC</span>
-          </div>
+          <img src={clgLogo} alt="College Logo" className="w-7 h-7 object-contain flex-shrink-0" />
           {!collapsed && (
             <div className="min-w-0">
               <p className="text-white text-xs font-semibold leading-tight truncate">Nagpur Institute of Technology</p>
