@@ -224,7 +224,7 @@ create table if not exists institution_trend (
 
 -- Users
 insert into users values
-  ('U001','admin@college.edu','admin123','admin','Dr. Priya Menon',null),
+  ('U001','admin@college.edu','admin123','admin','Dr. S. Zade',null),
   ('U002','ramesh@college.edu','faculty123','faculty','Dr. Ramesh Kumar',null),
   ('U003','lakshmi@college.edu','faculty123','faculty','Prof. Lakshmi Devi',null),
   ('U004','suresh@college.edu','faculty123','faculty','Dr. Suresh Babu',null),

@@ -8,7 +8,7 @@ DELETE FROM users WHERE id IN ('U001','U002','U003','U004','U005','U006','U007',
 
 -- Insert users table data with CORRECTED faculty emails matching the faculty table
 INSERT INTO users (id, email, password, role, name, student_id) VALUES
-  ('U001', 'admin@college.edu', 'admin123', 'admin', 'Dr. Priya Menon', null),
+  ('U001', 'admin@college.edu', 'admin123', 'admin', 'Dr. S. Zade', null),
   ('U002', 'ramesh@college.edu', 'faculty123', 'faculty', 'Dr. Ramesh Kumar', null),
   ('U003', 'lakshmi@college.edu', 'faculty123', 'faculty', 'Prof. Lakshmi Devi', null),
   ('U004', 'suresh@college.edu', 'faculty123', 'faculty', 'Dr. Suresh Babu', null),

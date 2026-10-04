@@ -6,6 +6,7 @@ export default function AdminFaculty() {
   const [faculty, setFaculty] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({ name: '', email: '', dept: 'Computer Science', role: 'Faculty', password: 'faculty123' });
   const [saving, setSaving] = useState(false);
   const [showResetPassword, setShowResetPassword] = useState(false);
@@ -16,13 +17,31 @@ export default function AdminFaculty() {
 
   useEffect(() => { api.faculty.list().then(setFaculty).catch(console.error).finally(() => setLoading(false)); }, []);
 
+  function openCreateModal() {
+    setEditingId(null);
+    setForm({ name: '', email: '', dept: 'Computer Science', role: 'Faculty', password: 'faculty123' });
+    setShowModal(true);
+  }
+
+  function openEditModal(fac: any) {
+    setEditingId(fac.id);
+    setForm({ name: fac.name, email: fac.email, dept: fac.dept, role: fac.role, password: 'faculty123' });
+    setShowModal(true);
+  }
+
   async function saveFaculty() {
     setSaving(true);
     try {
-      const rec = await api.faculty.create({ ...form, subjects: [], classes: [] });
-      setFaculty(f => [...f, rec]);
+      if (editingId) {
+        const updated = await api.faculty.update(editingId, { name: form.name, email: form.email, dept: form.dept, role: form.role });
+        setFaculty(f => f.map(x => x.id === editingId ? updated : x));
+      } else {
+        const rec = await api.faculty.create({ ...form, subjects: [], classes: [] });
+        setFaculty(f => [...f, rec]);
+      }
       setShowModal(false);
       setForm({ name: '', email: '', dept: 'Computer Science', role: 'Faculty', password: 'faculty123' });
+      setEditingId(null);
     } catch (e: any) { alert(e.message); }
     finally { setSaving(false); }
   }
@@ -61,7 +80,7 @@ export default function AdminFaculty() {
             <h1 className="text-lg font-semibold text-[#111827]">Faculty</h1>
             <p className="text-sm text-[#6B7280] mt-0.5">{faculty.length} faculty members · AY 2024–25</p>
           </div>
-          <button onClick={() => setShowModal(true)} className="px-3 py-1.5 text-xs bg-[#1E3A5F] text-white rounded hover:bg-[#162D4A]">+ Add Faculty</button>
+          <button onClick={openCreateModal} className="px-3 py-1.5 text-xs bg-[#1E3A5F] text-white rounded hover:bg-[#162D4A]">+ Add Faculty</button>
         </div>
 
         <div className="bg-white border border-[#E5E7EB] rounded overflow-hidden">
@@ -104,7 +123,7 @@ export default function AdminFaculty() {
                     </td>
                     <td>
                       <div className="flex items-center gap-2">
-                        <button className="text-xs text-[#1E3A5F] hover:underline">Edit</button>
+                        <button onClick={() => openEditModal(f)} className="text-xs text-[#1E3A5F] hover:underline">Edit</button>
                         <button onClick={() => { setSelectedFaculty(f); setShowResetPassword(true); }} 
                           className="text-xs text-amber-600 hover:underline">Reset Password</button>
                       </div>
@@ -120,7 +139,7 @@ export default function AdminFaculty() {
           <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50" onClick={() => setShowModal(false)}>
             <div className="bg-white rounded border border-[#E5E7EB] w-full max-w-md mx-4 shadow-xl" onClick={e => e.stopPropagation()}>
               <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#E5E7EB]">
-                <h2 className="text-sm font-semibold text-[#111827]">Add Faculty</h2>
+                <h2 className="text-sm font-semibold text-[#111827]">{editingId ? 'Edit Faculty' : 'Add Faculty'}</h2>
                 <button onClick={() => setShowModal(false)} className="text-[#9CA3AF] hover:text-[#374151]">✕</button>
               </div>
               <div className="p-5 space-y-3">
@@ -154,7 +173,7 @@ export default function AdminFaculty() {
               </div>
               <div className="flex justify-end gap-2 px-5 py-3.5 border-t border-[#E5E7EB]">
                 <button onClick={() => setShowModal(false)} className="px-3 py-1.5 text-xs border border-[#E5E7EB] rounded text-[#374151] hover:bg-[#F9FAFB]">Cancel</button>
-                <button onClick={saveFaculty} disabled={saving} className="px-3 py-1.5 text-xs bg-[#1E3A5F] text-white rounded hover:bg-[#162D4A] disabled:opacity-60">{saving ? 'Saving…' : 'Save'}</button>
+                <button onClick={saveFaculty} disabled={saving} className="px-3 py-1.5 text-xs bg-[#1E3A5F] text-white rounded hover:bg-[#162D4A] disabled:opacity-60">{saving ? 'Saving…' : editingId ? 'Update' : 'Save'}</button>
               </div>
             </div>
           </div>

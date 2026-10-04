@@ -37,7 +37,7 @@ app.post('/api/auth/login', async (req, res, next) => {
       email: process.env.ADMIN_EMAIL,
       password: process.env.ADMIN_PASSWORD,
       role: 'admin',
-      name: 'Administrator',
+      name: 'Dr. S. Zade',
     };
     const { data: users, error } = await supabase
       .from('users').select('*').eq('email', email).eq('password', password);
@@ -308,6 +308,22 @@ app.patch('/api/students/:id', async (req, res, next) => {
     if (error) throw error;
     if (!data) return res.status(404).json({ error: 'Not found' });
     
+    // If email changed, also update users table
+    if (req.body.email && current?.email && req.body.email !== current.email) {
+      await supabase.from('users')
+        .update({ email: req.body.email })
+        .eq('email', current.email)
+        .eq('role', 'student');
+    }
+    
+    // If name changed, also update users table
+    if (req.body.name && current?.email) {
+      await supabase.from('users')
+        .update({ name: req.body.name })
+        .eq('email', current.email)
+        .eq('role', 'student');
+    }
+    
     // Create notifications if risk changed to High or Medium
     if (riskChanged && (newRisk === 'High' || newRisk === 'Medium')) {
       const att = data.attendance || 0;
@@ -421,8 +437,29 @@ app.post('/api/faculty', async (req, res, next) => {
 
 app.patch('/api/faculty/:id', async (req, res, next) => {
   try {
+    // Get current faculty record
+    const { data: currentFaculty } = await supabase.from('faculty').select('email').eq('id', req.params.id).single();
+    
+    // Update faculty table
     const { data, error } = await supabase.from('faculty').update(req.body).eq('id', req.params.id).select().single();
     if (error) throw error;
+    
+    // If email changed, also update users table
+    if (req.body.email && currentFaculty?.email && req.body.email !== currentFaculty.email) {
+      await supabase.from('users')
+        .update({ email: req.body.email })
+        .eq('email', currentFaculty.email)
+        .eq('role', 'faculty');
+    }
+    
+    // If name changed, also update users table
+    if (req.body.name && currentFaculty?.email) {
+      await supabase.from('users')
+        .update({ name: req.body.name })
+        .eq('email', currentFaculty.email)
+        .eq('role', 'faculty');
+    }
+    
     res.json(data);
   } catch (e) { next(e); }
 });

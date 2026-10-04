@@ -10,7 +10,13 @@ export default function StudentRiskStatus() {
 
   useEffect(() => {
     if (!user?.studentId) return;
-    api.students.risk(user.studentId).then(setData).catch(console.error).finally(() => setLoading(false));
+    api.students.risk(user.studentId)
+      .then(setData)
+      .catch(err => {
+        console.error('Failed to load risk data:', err);
+        alert('Failed to load risk details: ' + err.message);
+      })
+      .finally(() => setLoading(false));
   }, [user?.studentId]);
 
   const student = data?.student;
